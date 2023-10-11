@@ -1,4 +1,7 @@
-import { Product } from "./Product";
+import { Product } from './Product/Product';
+import Section from './Section/Section';
+
+import css from './App.module.css';
 
 const productsData = [
   {
@@ -19,48 +22,41 @@ const productsData = [
     price: 6.99,
     discount: null,
   },
-];
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
+  {
+    id: '4',
+    title: 'Tacos S',
+    price: 1.5,
+    discount: null,
+  },
+  {
+    id: '5',
+    title: 'Tacos With Cheese',
+    price: 3.4,
+    discount: 0.2,
+  },
 ];
 
 export const App = () => {
   return (
-    <section>
-      <h1>Hello FSON89🥳</h1>
- 
-      <ul>
-        {months.map(month => <li key={month}>{month}</li>)}
-      </ul>
+    <div>
+      <Section>
+        <h1>Hello FSON89🥳</h1>
+      </Section>
 
-      {productsData.map(product => {
-        return (
-          <Product
-            key={product.id}
-            title={product.title}
-            price={product.price}
-            discount={product.discount}
-          />
-        );
-      })}
-
-      {/* <Product title="Tacos With Lime" price="10.99" discount={null} />
-      <Product title="Tacos L" price="7.66" discount={1.5} />
-      <Product title="Tacos S" price="4.55" discount={2.33} /> */}
-    </section>
+      <Section title="Product List">
+        <div className={css.productList}>
+          {productsData.map(product => {
+            return (
+              <Product
+                key={product.id}
+                title={product.title}
+                price={product.price}
+                discount={product.discount}
+              />
+            );
+          })}
+        </div>
+      </Section>
+    </div>
   );
 };
-
-

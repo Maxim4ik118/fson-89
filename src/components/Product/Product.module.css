@@ -1,0 +1,36 @@
+.product {
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 370px;
+}
+
+.productImg {
+  max-width: 350px;
+  width: 100%;
+  height: 250px;
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.discountBage {
+  padding: 10px;
+  border: 1px solid silver;
+  border-radius: 10px;
+  box-shadow: 2px 3px 51px -14px rgba(0, 0, 0, 0.75);
+}
+
+.apology {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, .5);
+}
+
+.productAddToCartBtn {
+  padding: 15px;
+  font-size: 14px;
+  border-radius: 5px;
+  background-color: transparent;
+  cursor: pointer;
+}
