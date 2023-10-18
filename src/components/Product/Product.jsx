@@ -1,6 +1,6 @@
 import css from './Product.module.css';
 
-export const Product = ({ id, title, price, discount, handleDeleteProduct }) => {
+const Product = ({ id, title, price, discount, handleDeleteProduct }) => {
   const productBg = discount ? '#97e605' : '#f9bf04';
 
   const productStyles = {
@@ -27,9 +27,14 @@ export const Product = ({ id, title, price, discount, handleDeleteProduct }) => 
       <button className={css.productAddToCartBtn} type="button">
         Add to cart
       </button>
-      <button onClick={() => handleDeleteProduct(id)} className={css.productAddToCartBtn} type="button">
+      <button
+        onClick={() => handleDeleteProduct(id)}
+        className={css.productAddToCartBtn}
+        type="button"
+      >
         &times;
       </button>
     </div>
   );
 };
+export default Product;

@@ -1,6 +1,10 @@
 import { Component } from 'react';
-import { Product } from 'components/Product/Product';
-import Section from 'components/Section/Section';
+import { nanoid } from 'nanoid';
+
+// import { Product } from 'components/Product/Product';
+// import Section from 'components/Section/Section';
+// import ProductForm from './ProductForm/ProductForm';
+import { Product, ProductForm, Section } from 'components';
 
 import css from './App.module.css';
 
@@ -39,30 +43,7 @@ const productsData = [
 
 export class App extends Component {
   state = {
-    counterValue: 0,
     products: productsData,
-    showMessage: false,
-    currentPage: 1,
-  };
-
-  handleIncrement = () => {
-    // this.state.counterValue = this.state.counterValue + 1; ❌
-    // this.setState({ counterValue: this.state.counterValue + 1 }); ✅
-    // this.setState(state => { ✅
-    //   return {
-    //     counterValue: state.counterValue + 1,
-    //   };
-    // });
-    this.setState({ counterValue: this.state.counterValue + 1 });
-  };
-
-  handleDecrement = () => {
-    if (this.state.counterValue === 0) {
-      alert('Please, stop! Counter value is already decremented!');
-      return;
-    }
-
-    this.setState({ counterValue: this.state.counterValue - 1 });
   };
 
   handleDeleteProduct = productId => {
@@ -74,6 +55,26 @@ export class App extends Component {
     });
   };
 
+  handleAddProduct = productData => {
+    const hasDuplicates = this.state.products.some(
+      product => product.title === productData.title
+    );
+
+    if (hasDuplicates) {
+      alert(`Oops, produc with title '${productData.title}' already exists!`);
+      return;
+    }
+
+    const finalProduct = { // Object.assign({ id: nanoid() }, productData)
+      ...productData,
+      id: nanoid(),
+    };
+
+    this.setState(prevState => ({
+      products: [...prevState.products, finalProduct],
+    }));
+  };
+
   render() {
     const sortedProducts = [...this.state.products].sort(
       (a, b) => b.discount - a.discount
@@ -82,15 +83,10 @@ export class App extends Component {
       <div>
         <Section>
           <h1>Hello FSON89🥳</h1>
-          <button onClick={this.handleDecrement}>Decrement</button>
-          <b>Counter value: {this.state.counterValue}</b>
-          <button onClick={this.handleIncrement}>Increment</button>
+        </Section>
 
-          {this.state.counterValue >= 5 && (
-            <div>
-              Congrats! You won the discount promocode 20% OFF - #R3DW1E3🎉
-            </div>
-          )}
+        <Section title="Add product Form">
+          <ProductForm handleAddProduct={this.handleAddProduct} />
         </Section>
 
         <Section title="Product List">
