@@ -1,6 +1,13 @@
 import css from './Product.module.css';
 
-const Product = ({ id, title, price, discount, handleDeleteProduct }) => {
+const Product = ({
+  id,
+  title,
+  price,
+  discount,
+  handleDeleteProduct,
+  openModal,
+}) => {
   const productBg = discount ? '#97e605' : '#f9bf04';
 
   const productStyles = {
@@ -26,6 +33,13 @@ const Product = ({ id, title, price, discount, handleDeleteProduct }) => {
       <p>Price: {price}$</p>
       <button className={css.productAddToCartBtn} type="button">
         Add to cart
+      </button>
+      <button
+        onClick={() => openModal({ title, price, discount })}
+        className={css.productAddToCartBtn}
+        type="button"
+      >
+        See the details
       </button>
       <button
         onClick={() => handleDeleteProduct(id)}

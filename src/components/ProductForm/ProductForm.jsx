@@ -22,6 +22,12 @@ export default class ProductForm extends Component {
     };
 
     this.props.handleAddProduct(productData);
+    this.setState({
+      title: '',
+      price: '',
+      hasDiscount: false,
+      discount: '',
+    });
   };
 
   handleInputChange = event => {

@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 // import Section from 'components/Section/Section';
 // import ProductForm from './ProductForm/ProductForm';
 import { Product, ProductForm, Section } from 'components';
+import Modal from './Modal/Modal';
 
 import css from './App.module.css';
 
@@ -44,7 +45,23 @@ const productsData = [
 export class App extends Component {
   state = {
     products: productsData,
+    isOpenModal: false,
+    modalData: null,
   };
+
+  componentDidMount() {
+    const stringifiedProducts = localStorage.getItem('products');
+    const parsedProducts = JSON.parse(stringifiedProducts) ?? productsData;
+
+    this.setState({ products: parsedProducts });
+  }
+
+  componentDidUpdate(_, prevState) {
+    if(prevState.products !== this.state.products) {
+     const stringifiedProducts = JSON.stringify(this.state.products);
+     localStorage.setItem('products', stringifiedProducts);
+    }
+  }
 
   handleDeleteProduct = productId => {
     // "3"
@@ -65,7 +82,8 @@ export class App extends Component {
       return;
     }
 
-    const finalProduct = { // Object.assign({ id: nanoid() }, productData)
+    const finalProduct = {
+      // Object.assign({ id: nanoid() }, productData)
       ...productData,
       id: nanoid(),
     };
@@ -73,6 +91,20 @@ export class App extends Component {
     this.setState(prevState => ({
       products: [...prevState.products, finalProduct],
     }));
+  };
+
+  openModal = someDataToModal => {
+    this.setState({
+      isOpenModal: true,
+      modalData: someDataToModal,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      isOpenModal: false,
+      modalData: null,
+    });
   };
 
   render() {
@@ -100,11 +132,19 @@ export class App extends Component {
                   price={product.price}
                   discount={product.discount}
                   handleDeleteProduct={this.handleDeleteProduct}
+                  openModal={this.openModal}
                 />
               );
             })}
           </div>
         </Section>
+
+        {this.state.isOpenModal && (
+          <Modal
+            closeModal={this.closeModal}
+            modalData={this.state.modalData}
+          />
+        )}
       </div>
     );
   }
