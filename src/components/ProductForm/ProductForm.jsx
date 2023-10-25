@@ -45,9 +45,12 @@ export default class ProductForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className={css.form}>
+      <form
+        onSubmit={this.handleSubmit}
+        className={`${css.form} ${css.formLarge}`}
+      >
         {this.state.title === 'Spagetti' && (
-          <h2>Congrats! You won a promocode - #R3E2A1🎉</h2>
+          <h2>Congrats! You won a promocode😒😭 - #R3E2A1🎉</h2>
         )}
         <label className={css.formLabel}>
           <p className={css.labelText}>Title:</p>

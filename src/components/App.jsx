@@ -8,6 +8,7 @@ import { Product, ProductForm, Section } from 'components';
 import Modal from './Modal/Modal';
 
 import css from './App.module.css';
+import MyUniversalInput from './MyUniversalInput';
 
 const productsData = [
   {
@@ -138,6 +139,8 @@ export class App extends Component {
             })}
           </div>
         </Section>
+
+        
 
         {this.state.isOpenModal && (
           <Modal
