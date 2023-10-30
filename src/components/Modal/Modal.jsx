@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StyledModal } from './Styled';
 
@@ -31,55 +31,58 @@ import { StyledModal } from './Styled';
     - Оновлюють(синхронізуються) дані зі стейту з локальним сховищем
 */
 
-export default class Modal extends Component {
-  state = {
-    counter: 1,
-  };
+const Modal = ({ modalData, closeModal }) => {
+  const [counter, setCounter] = useState(1);
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.code === 'Escape') {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
-  }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    document.body.style.overflow = 'auto';
-  }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [closeModal]);
 
-  handleIncrementProduct = () => {
-    this.setState(prevState => ({ counter: prevState.counter + 1 }));
+  useEffect(() => {
+    console.log('Product counter value: ' + counter);
+  }, [counter]);
+
+  const handleIncrementProduct = () => {
+    setCounter(prevState => prevState + 1);
+    // setCounter(counter + 1);
   };
 
-  handleOverayClick = event => {
+  const handleOverayClick = event => {
     if (event.target === event.currentTarget) {
-      this.props.closeModal();
+      closeModal();
     }
   };
 
-  handleKeyDown = event => {
-    if (event.code === 'Escape') {
-      this.props.closeModal();
-    }
-  };
-
-  render() {
-    return (
-      <StyledModal onClick={this.handleOverayClick}>
-        <div className="modal">
-          <button onClick={this.props.closeModal} className="closeBtn">
-            ❌
+  return (
+    <StyledModal onClick={handleOverayClick}>
+      <div className="modal">
+        <button onClick={closeModal} className="closeBtn">
+          ❌
+        </button>
+        <h2>Product Details</h2>
+        <div>
+          <h3>Title: {modalData.title}</h3>
+          <p>Price: {modalData.price}$</p>
+          <p>Discount: {modalData.discount}$</p>
+          <button onClick={handleIncrementProduct}>
+            Add product: {counter}
           </button>
-          <h2>Product Details</h2>
-          <div>
-            <h3>Title: {this.props.modalData.title}</h3>
-            <p>Price: {this.props.modalData.price}$</p>
-            <p>Discount: {this.props.modalData.discount}$</p>
-            <button onClick={this.handleIncrementProduct}>
-              Add product: {this.state.counter}
-            </button>
-          </div>
         </div>
-      </StyledModal>
-    );
-  }
-}
+      </div>
+    </StyledModal>
+  );
+};
+
+export default Modal;

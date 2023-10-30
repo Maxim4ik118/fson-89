@@ -1,36 +1,31 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import css from './ProductForm.module.css';
 
-export default class ProductForm extends Component {
-  state = {
-    title: '',
-    price: '',
-    hasDiscount: false,
-    discount: '',
-  };
+const ProductForm = ({ handleAddProduct }) => {
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [hasDiscount, setHasDiscount] = useState(false);
+  const [discount, setDiscount] = useState('');
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
 
-    const hasDiscount = this.state.hasDiscount;
-
     const productData = {
-      title: this.state.title,
-      price: Number.parseFloat(this.state.price),
-      discount: hasDiscount ? Number.parseFloat(this.state.discount) : null,
+      title,
+      price: Number.parseFloat(price),
+      discount: hasDiscount ? Number.parseFloat(discount) : null,
     };
 
-    this.props.handleAddProduct(productData);
-    this.setState({
-      title: '',
-      price: '',
-      hasDiscount: false,
-      discount: '',
-    });
+    handleAddProduct(productData);
+
+    setTitle('');
+    setPrice('');
+    setHasDiscount(false);
+    setDiscount('');
   };
 
-  handleInputChange = event => {
+  const handleInputChange = event => {
     const value =
       event.target.type === 'checkbox'
         ? event.target.checked
@@ -38,60 +33,74 @@ export default class ProductForm extends Component {
 
     const name = event.target.name; // 'price'
 
-    this.setState({
-      [name]: value,
-    });
+    switch (name) {
+      case 'title': {
+        setTitle(value);
+        return;
+      }
+      case 'price': {
+        setPrice(value);
+        return;
+      }
+      case 'hasDiscount': {
+        setHasDiscount(value);
+        return;
+      }
+      case 'discount': {
+        setDiscount(value);
+        return;
+      }
+      default:
+        return;
+    }
   };
 
-  render() {
-    return (
-      <form
-        onSubmit={this.handleSubmit}
-        className={`${css.form} ${css.formLarge}`}
-      >
-        {this.state.title === 'Spagetti' && (
-          <h2>Congrats! You won a promocode😒😭 - #R3E2A1🎉</h2>
-        )}
+  return (
+    <form onSubmit={handleSubmit} className={`${css.form} ${css.formLarge}`}>
+      {title === 'Spagetti' && (
+        <h2>Congrats! You won a promocode😒😭 - #R3E2A1🎉</h2>
+      )}
+      <label className={css.formLabel}>
+        <p className={css.labelText}>Title:</p>
+        <input
+          type="text"
+          name="title"
+          onChange={handleInputChange}
+          value={title}
+        />
+      </label>
+      <label className={css.formLabel}>
+        <p className={css.labelText}>Price:</p>
+        <input
+          type="text"
+          name="price"
+          onChange={handleInputChange}
+          value={price}
+        />
+      </label>
+      <label className={css.formLabel}>
+        <input
+          type="checkbox"
+          name="hasDiscount"
+          onChange={handleInputChange}
+          checked={hasDiscount}
+        />{' '}
+        Has discount?
+      </label>
+      {hasDiscount && (
         <label className={css.formLabel}>
-          <p className={css.labelText}>Title:</p>
+          <p className={css.labelText}>Discount:</p>
           <input
             type="text"
-            name="title"
-            onChange={this.handleInputChange}
-            value={this.state.title}
+            name="discount"
+            onChange={handleInputChange}
+            value={discount}
           />
         </label>
-        <label className={css.formLabel}>
-          <p className={css.labelText}>Price:</p>
-          <input
-            type="text"
-            name="price"
-            onChange={this.handleInputChange}
-            value={this.state.price}
-          />
-        </label>
-        <label className={css.formLabel}>
-          <input
-            type="checkbox"
-            name="hasDiscount"
-            onChange={this.handleInputChange}
-            checked={this.state.hasDiscount}
-          />{' '}
-          Has discount?
-        </label>
-        {this.state.hasDiscount && (
-          <label className={css.formLabel}>
-            <p className={css.labelText}>Discount:</p>
-            <input
-              type="text"
-              name="discount"
-              onChange={this.handleInputChange}
-              value={this.state.discount}
-            />
-          </label>
-        )}
-        <button type="submit">Add Product</button>
-      </form>
-    );
-  }
-}
+      )}
+      <button type="submit">Add Product</button>
+    </form>
+  );
+};
+
+export default ProductForm;

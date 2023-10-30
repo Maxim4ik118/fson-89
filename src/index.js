@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import AppWithRequests from 'components/AppWithRequests';
+import { App } from 'components/App';
 
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(<AppWithRequests />);
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);

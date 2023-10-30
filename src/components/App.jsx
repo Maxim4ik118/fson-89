@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 
 // import { Product } from 'components/Product/Product';
@@ -8,7 +8,6 @@ import { Product, ProductForm, Section } from 'components';
 import Modal from './Modal/Modal';
 
 import css from './App.module.css';
-import MyUniversalInput from './MyUniversalInput';
 
 const productsData = [
   {
@@ -43,38 +42,27 @@ const productsData = [
   },
 ];
 
-export class App extends Component {
-  state = {
-    products: productsData,
-    isOpenModal: false,
-    modalData: null,
-  };
-
-  componentDidMount() {
+export const App = () => {
+  const [products, setProducts] = useState(() => {
     const stringifiedProducts = localStorage.getItem('products');
     const parsedProducts = JSON.parse(stringifiedProducts) ?? productsData;
 
-    this.setState({ products: parsedProducts });
-  }
+    return parsedProducts;
+  });
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
-  componentDidUpdate(_, prevState) {
-    if(prevState.products !== this.state.products) {
-     const stringifiedProducts = JSON.stringify(this.state.products);
-     localStorage.setItem('products', stringifiedProducts);
-    }
-  }
+  useEffect(() => {
+    const stringifiedProducts = JSON.stringify(products);
+    localStorage.setItem('products', stringifiedProducts);
+  }, [products]);
 
-  handleDeleteProduct = productId => {
-    // "3"
-    // [{id: "1"}, {id: "2"}, {id: "3"}]
-    // [{id: "1"}, {id: "2"}]
-    this.setState({
-      products: this.state.products.filter(product => product.id !== productId),
-    });
+  const handleDeleteProduct = productId => {
+    setProducts(products.filter(product => product.id !== productId));
   };
 
-  handleAddProduct = productData => {
-    const hasDuplicates = this.state.products.some(
+  const handleAddProduct = productData => {
+    const hasDuplicates = products.some(
       product => product.title === productData.title
     );
 
@@ -84,71 +72,50 @@ export class App extends Component {
     }
 
     const finalProduct = {
-      // Object.assign({ id: nanoid() }, productData)
       ...productData,
       id: nanoid(),
     };
 
-    this.setState(prevState => ({
-      products: [...prevState.products, finalProduct],
-    }));
+    setProducts([finalProduct, ...products]);
+    // setProducts(prevState => [...prevState, finalProduct])
   };
 
-  openModal = someDataToModal => {
-    this.setState({
-      isOpenModal: true,
-      modalData: someDataToModal,
-    });
+  const openModal = someDataToModal => {
+    setIsOpenModal(true);
+    setModalData(someDataToModal);
   };
 
-  closeModal = () => {
-    this.setState({
-      isOpenModal: false,
-      modalData: null,
-    });
+  const closeModal = () => {
+    setIsOpenModal(false);
+    setModalData(null);
   };
 
-  render() {
-    const sortedProducts = [...this.state.products].sort(
-      (a, b) => b.discount - a.discount
-    );
-    return (
-      <div>
-        <Section>
-          <h1>Hello FSON89🥳</h1>
-        </Section>
+  const sortedProducts = [...products].sort((a, b) => b.discount - a.discount);
+  return (
+    <div>
+      <Section title="Add product Form">
+        <ProductForm handleAddProduct={handleAddProduct} />
+      </Section>
 
-        <Section title="Add product Form">
-          <ProductForm handleAddProduct={this.handleAddProduct} />
-        </Section>
+      <Section title="Product List">
+        <div className={css.productList}>
+          {sortedProducts.map(product => {
+            return (
+              <Product
+                key={product.id}
+                id={product.id}
+                title={product.title}
+                price={product.price}
+                discount={product.discount}
+                handleDeleteProduct={handleDeleteProduct}
+                openModal={openModal}
+              />
+            );
+          })}
+        </div>
+      </Section>
 
-        <Section title="Product List">
-          <div className={css.productList}>
-            {sortedProducts.map(product => {
-              return (
-                <Product
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  price={product.price}
-                  discount={product.discount}
-                  handleDeleteProduct={this.handleDeleteProduct}
-                  openModal={this.openModal}
-                />
-              );
-            })}
-          </div>
-        </Section>
-
-        
-
-        {this.state.isOpenModal && (
-          <Modal
-            closeModal={this.closeModal}
-            modalData={this.state.modalData}
-          />
-        )}
-      </div>
-    );
-  }
-}
+      {isOpenModal && <Modal closeModal={closeModal} modalData={modalData} />}
+    </div>
+  );
+};
