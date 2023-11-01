@@ -1,21 +1,18 @@
+import { useContext } from 'react';
 import css from './Product.module.css';
+import { ModalContext } from 'context/ModalContext';
 
-const Product = ({
-  id,
-  title,
-  price,
-  discount,
-  handleDeleteProduct,
-  openModal,
-}) => {
+const Product = ({ id, title, price, discount, handleDeleteProduct }) => {
+  const { dayOfTheMonth, openModal } = useContext(ModalContext);
+
   const productBg = discount ? '#97e605' : '#f9bf04';
-
   const productStyles = {
     backgroundColor: productBg,
   };
 
   return (
     <div className={css.product} style={productStyles}>
+      <b>Day of the month: {dayOfTheMonth}</b>
       <img
         src="https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?dpr=2&h=480&w=640"
         alt="Tacos With Lime"
