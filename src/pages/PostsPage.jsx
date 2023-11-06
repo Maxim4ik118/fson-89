@@ -1,14 +1,14 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 
-import Loader from './Loader/Loader';
-
-import { StyledAppWithRequests } from './AppWithRequests.styled';
+import { StyledPosts } from './PostsPage.styled';
+import Loader from 'components/Loader/Loader';
+import { Link } from 'react-router-dom';
 
 // rcc - react class component
 // rafce - react arrow function expression component export default
 
-export default class AppWithRequests extends Component {
+export default class PostsPage extends Component {
   state = {
     posts: null,
     comments: null,
@@ -78,7 +78,7 @@ export default class AppWithRequests extends Component {
 
   render() {
     return (
-      <StyledAppWithRequests>
+      <StyledPosts>
         <h1>HTTP-requests</h1>
 
         {this.state.error !== null && (
@@ -94,13 +94,15 @@ export default class AppWithRequests extends Component {
                 return (
                   <li
                     key={post.id}
-                    onClick={() => this.onSelecPostId(post.id)}
+                    // onClick={() => this.onSelecPostId(post.id)}
                     className="postListItem"
                   >
-                    <h2 className="itemTitle">{post.title}</h2>
-                    <p className="itemBody">
-                      <b>Body:</b> {post.body}
-                    </p>
+                    <Link to={`/posts/${post.id}`}>
+                      <h2 className="itemTitle">{post.title}</h2>
+                      <p className="itemBody">
+                        <b>Body:</b> {post.body}
+                      </p>
+                    </Link>
                   </li>
                 );
               })}
@@ -125,7 +127,7 @@ export default class AppWithRequests extends Component {
               })}
           </ul>
         </div>
-      </StyledAppWithRequests>
+      </StyledPosts>
     );
   }
 }

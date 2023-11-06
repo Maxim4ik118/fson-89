@@ -1,112 +1,56 @@
-import { useContext, useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
+import HomePage from 'pages/HomePage';
+import PostDetails from 'pages/PostDetails';
+import PostsPage from 'pages/PostsPage';
+import { ProductsPage } from 'pages/ProductsPage';
+import { NavLink, Route, Routes } from 'react-router-dom';
 
-// import { Product } from 'components/Product/Product';
-// import Section from 'components/Section/Section';
-// import ProductForm from './ProductForm/ProductForm';
-import { Product, ProductForm, Section } from 'components';
-import Modal from './Modal/Modal';
+/*
+1. Обгорнути весь App в компонент BrowserRouter
+2. Прописати маршрути та компоненти Link|NavLink
+3. Підготувати компоненти Route для кожноъ сторінки за певною адресою.
+4. Якщо нам потрібно зробити шаблонну сторінку для багатьох однотипних даних,
+    нам потрібно використовувати динамічні параметри '/posts/:postId'
+5. Щоб у користувача була змога потрабити на конкретну шаблонну сторінку 
+    ми у компоненті Link або NavLink вказуємо маршрут наступним чином <Link to={`/posts/${post.id}`}>
 
-import css from './App.module.css';
-import { ModalContext } from 'context/ModalContext';
 
-const productsData = [
-  {
-    id: 'Wdawdawd',
-    title: 'Tacos With Lime M',
-    price: 5.85,
-    discount: 15,
-  },
-  {
-    id: '312dwadawd',
-    title: 'Tacos With Lime XXL',
-    price: 10.99,
-    discount: 30,
-  },
-  {
-    id: '@#21dwdaw',
-    title: 'Tacos With Lime XL',
-    price: 6.99,
-    discount: null,
-  },
-  {
-    id: 'd12dsda@@!',
-    title: 'Tacos S',
-    price: 1.5,
-    discount: null,
-  },
-  {
-    id: 'DWafg32fd23f2',
-    title: 'Tacos With Cheese',
-    price: 3.4,
-    discount: 0.2,
-  },
-];
+Етапи роботи з маршрутеризацією:
+1. Змінити адресний рядок браузера за допомогою компонти Link або NavLink маршрут вказуємо 
+   в (пропс to).
+2. Підготувати компонент Route для відображення конкретної сторінки за певним 
+   шляхом(пропс path).
+
+РЕМАРКА!!!
+Тег <a href="..." target="_blank" rel="noopener noreferrer"></a> Ми використовуємо для 
+   всіх зовнішніх посиланнь(фейсбук, гугель, ютубе, інтаграми).
+Тег <NavLink to="..."></NavLink> або <Link to="..."></Link> Ми використовуємо виключно 
+   для навігації всередині нашого додатку.
+*/
 
 export const App = () => {
-  const [products, setProducts] = useState(() => {
-    const stringifiedProducts = localStorage.getItem('products');
-    const parsedProducts = JSON.parse(stringifiedProducts) ?? productsData;
-
-    return parsedProducts;
-  });
-  const { isOpenModal } = useContext(ModalContext);
-
-  useEffect(() => {
-    const stringifiedProducts = JSON.stringify(products);
-    localStorage.setItem('products', stringifiedProducts);
-  }, [products]);
-
-  const handleDeleteProduct = productId => {
-    setProducts(products.filter(product => product.id !== productId));
-  };
-
-  const handleAddProduct = productData => {
-    const hasDuplicates = products.some(
-      product => product.title === productData.title
-    );
-
-    if (hasDuplicates) {
-      alert(`Oops, produc with title '${productData.title}' already exists!`);
-      return;
-    }
-
-    const finalProduct = {
-      ...productData,
-      id: nanoid(),
-    };
-
-    setProducts([finalProduct, ...products]);
-    // setProducts(prevState => [...prevState, finalProduct])
-  };
-
-
-
-  const sortedProducts = [...products].sort((a, b) => b.discount - a.discount);
   return (
     <div>
-      <Section title="Add product Form">
-        <ProductForm handleAddProduct={handleAddProduct} />
-      </Section>
+      <header>
+        <NavLink className="header-link" to="/">
+          Home
+        </NavLink>
+        <NavLink className="header-link " to="/posts">
+          Posts
+        </NavLink>
+        <NavLink className="header-link " to="/products">
+          Products
+        </NavLink>
+      </header>
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/posts" element={<PostsPage />} />
+                   {/* /posts/21dwadw */}
+          <Route path="/posts/:postId/*" element={<PostDetails />} />
 
-      <Section title="Product List">
-        <div className={css.productList}>
-          {sortedProducts.map(product => {
-            return (
-              <Product
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                price={product.price}
-                discount={product.discount}
-                handleDeleteProduct={handleDeleteProduct}
-              />
-            );
-          })}
-        </div>
-      </Section>
-
-      {isOpenModal && <Modal />}
+        </Routes>
+      </main>
     </div>
   );
 };
