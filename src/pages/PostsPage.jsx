@@ -1,133 +1,80 @@
+// import axios from 'axios';
 import axios from 'axios';
-import React, { Component } from 'react';
-
-import { StyledPosts } from './PostsPage.styled';
 import Loader from 'components/Loader/Loader';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 // rcc - react class component
 // rafce - react arrow function expression component export default
 
-export default class PostsPage extends Component {
-  state = {
-    posts: null,
-    comments: null,
-    selectedPostId: null,
+const PostsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchedPosts, setSearchedPosts] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    isLoading: false,
-    error: null,
+  const location = useLocation();
+
+  // ?query=123
+  const queryValue = searchParams.get('query'); // '123'
+  // CTRL + SHIFT + L
+
+  const onFormSubmit = e => {
+    e.preventDefault();
+    const value = e.currentTarget.elements.searchKey.value;
+    setSearchParams({ query: value });
   };
 
-  fetchPosts = async () => {
-    try {
-      this.setState({
-        isLoading: true,
-      });
-      const { data } = await axios.get(
-        'https://jsonplaceholder.typicode.com/posts'
-      );
+  useEffect(() => {
+    if (!queryValue) return;
+    const fetchSearchedPosts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const { data } = await axios.get(
+          `https://jsonplaceholder.typicode.com/posts/${queryValue}`
+        );
+        // ВАМ ПОТРІБНО БУДЕ ПРОСТО ЗРОБИТИ setSearchedPosts(data)
+        setSearchedPosts([data]);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      this.setState({
-        posts: data,
-      });
-    } catch (error) {
-      this.setState({ error: error.message });
-    } finally {
-      this.setState({
-        isLoading: false,
-      });
-    }
-  };
+    fetchSearchedPosts();
+  }, [queryValue]);
 
-  fetchPostComments = async () => {
-    try {
-      this.setState({
-        isLoading: true,
-      });
-      const { data } = await axios.get(
-        `https://jsonplaceholder.typicode.com/comments?postId=${this.state.selectedPostId}`
-      );
+  return (
+    <div>
+      <form onSubmit={onFormSubmit}>
+        <label>
+          <span>Search post by id:</span>
+          <input type="text" name="searchKey" required placeholder="12" />
+        </label>
+        <button type="submit">Search post</button>
+      </form>
+      {error !== null && <p className="error-bage">{error}</p>}
+      {isLoading && <Loader />}
+      {searchedPosts !== null &&
+        searchedPosts.map(post => {
+          return (
+            <Link
+              state={{ from: location }}
+              key={post.id}
+              to={`/posts/${post.id}`}
+            >
+              <div>
+                <h2>{post.title}</h2>
+                <h3>PostId: {post.id}</h3>
+                <code>{post.body}</code>
+              </div>
+            </Link>
+          );
+        })}
+    </div>
+  );
+};
 
-      this.setState({
-        comments: data,
-      });
-    } catch (error) {
-      this.setState({ error: error.message });
-    } finally {
-      this.setState({
-        isLoading: false,
-      });
-    }
-  };
-
-  onSelecPostId = postId => {
-    this.setState({
-      selectedPostId: postId,
-    });
-  };
-
-  componentDidMount() {
-    this.fetchPosts();
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (prevState.selectedPostId !== this.state.selectedPostId) {
-      this.fetchPostComments();
-    }
-  }
-
-  render() {
-    return (
-      <StyledPosts>
-        <h1>HTTP-requests</h1>
-
-        {this.state.error !== null && (
-          <p className="error-bage">
-            Oops, some error occured... Error message: {this.state.error}
-          </p>
-        )}
-        {this.state.isLoading && <Loader />}
-        <div className="listWrapper">
-          <ul className="postList">
-            {this.state.posts !== null &&
-              this.state.posts.map(post => {
-                return (
-                  <li
-                    key={post.id}
-                    // onClick={() => this.onSelecPostId(post.id)}
-                    className="postListItem"
-                  >
-                    <Link to={`/posts/${post.id}`}>
-                      <h2 className="itemTitle">{post.title}</h2>
-                      <p className="itemBody">
-                        <b>Body:</b> {post.body}
-                      </p>
-                    </Link>
-                  </li>
-                );
-              })}
-          </ul>
-          <ul className="commentsList">
-            {this.state.selectedPostId !== null && (
-              <li className="commentsListItem">
-                Selected post id: {this.state.selectedPostId}
-              </li>
-            )}
-            {this.state.comments !== null &&
-              this.state.comments.map(comment => {
-                return (
-                  <li key={comment.id} className="commentsListItem">
-                    <h2 className="commentTitle">Name: {comment.name}</h2>
-                    <h3 className="commentEmail">Email: {comment.email}</h3>
-                    <p className="commentBody">
-                      <b>Body:</b> {comment.body}
-                    </p>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-      </StyledPosts>
-    );
-  }
-}
+export default PostsPage;

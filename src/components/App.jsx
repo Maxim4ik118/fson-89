@@ -1,8 +1,16 @@
-import HomePage from 'pages/HomePage';
-import PostDetails from 'pages/PostDetails';
-import PostsPage from 'pages/PostsPage';
-import { ProductsPage } from 'pages/ProductsPage';
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+// import HomePage from 'pages/HomePage';
+// import PostDetails from 'pages/PostDetails';
+// import PostsPage from 'pages/PostsPage';
+// import ProductsPage from 'pages/ProductsPage';
+import Layout from './Layout/Layout';
+import Loader from './Loader/Loader';
+
+const HomePage = lazy(() => import('pages/HomePage'));
+const PostDetails = lazy(() => import('pages/PostDetails'));
+const PostsPage = lazy(() => import('pages/PostsPage'));
+const ProductsPage = lazy(() => import('pages/ProductsPage'));
 
 /*
 1. Обгорнути весь App в компонент BrowserRouter
@@ -29,28 +37,17 @@ import { NavLink, Route, Routes } from 'react-router-dom';
 
 export const App = () => {
   return (
-    <div>
-      <header>
-        <NavLink className="header-link" to="/">
-          Home
-        </NavLink>
-        <NavLink className="header-link " to="/posts">
-          Posts
-        </NavLink>
-        <NavLink className="header-link " to="/products">
-          Products
-        </NavLink>
-      </header>
-      <main>
+    <Layout>
+      <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/posts" element={<PostsPage />} />
-                   {/* /posts/21dwadw */}
+          {/* /posts/21dwadw */}
           <Route path="/posts/:postId/*" element={<PostDetails />} />
-
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </main>
-    </div>
+      </Suspense>
+    </Layout>
   );
 };
