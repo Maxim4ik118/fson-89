@@ -1,0 +1,15 @@
+.headerLink {
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+  padding: 20px;
+  margin-right: 25px;
+  display: inline-flex;
+  border: 1px solid black;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+.active {
+  background-color: black;
+  color: #fff;
+}

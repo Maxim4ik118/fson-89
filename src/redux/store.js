@@ -1,11 +1,38 @@
-import { combineReducers, createStore } from 'redux';
-import { devToolsEnhancer } from '@redux-devtools/extension';
+import { configureStore } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 import { productsReducer } from './products/products.reducer';
+import { modalReducer } from './modal/modal.reducer';
 
-const rootReducer = combineReducers({
-  productsStore: productsReducer,
+const productsConfig = {
+  key: 'products',
+  storage,
+  whitelist: ['products'],
+  // blacklist: ['isLoading', 'error'],
+};
+
+
+export const store = configureStore({
+  reducer: {
+    productsStore: persistReducer(productsConfig, productsReducer),
+    modal: modalReducer,
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-const enhancer = devToolsEnhancer();
-export const store = createStore(rootReducer, enhancer);
+export const persistor = persistStore(store);

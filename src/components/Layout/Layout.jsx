@@ -1,17 +1,34 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import css from './Layout.module.css';
+
 const Layout = ({ children }) => {
   return (
     <div>
       <header>
-        <NavLink className="header-link" to="/">
+        <NavLink
+          className={({ isActive }) =>
+            `${css.headerLink} ${isActive ? css.active : ''}`
+          }
+          to="/"
+        >
           Home
         </NavLink>
-        <NavLink className="header-link " to="/posts">
+        <NavLink
+          className={({ isActive }) =>
+            `${css.headerLink} ${isActive ? css.active : ''}`
+          }
+          to="/posts"
+        >
           Posts
         </NavLink>
-        <NavLink className="header-link " to="/products">
+        <NavLink
+          className={({ isActive }) =>
+            `${css.headerLink} ${isActive ? css.active : ''}`
+          }
+          to="/products"
+        >
           Products
         </NavLink>
       </header>
