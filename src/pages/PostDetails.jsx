@@ -11,6 +11,7 @@ import {
 import Loader from 'components/Loader/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts, fetchPostDetails } from 'redux/postDetails/postDetails.reducer';
+import { selectPostDetails, selectPostDetailsError, selectPostDetailsIsLoading } from 'redux/postDetails/postDetails.selectors';
 
 const PostsComments = lazy(() => import('pages/PostsComments'));
 
@@ -20,9 +21,9 @@ const PostDetails = () => {
   const dispatch = useDispatch();
   const backLinkRef = useRef(location.state?.from ?? '/');
 
-  const postDetails = useSelector(state => state.magazine.postDetails);
-  const isLoading = useSelector(state => state.magazine.isLoading);
-  const error = useSelector(state => state.magazine.error);
+  const postDetails = useSelector(selectPostDetails);
+  const isLoading = useSelector(selectPostDetailsIsLoading);
+  const error = useSelector(selectPostDetailsError);
 
   useEffect(() => {
     dispatch(fetchPostDetails(postId))

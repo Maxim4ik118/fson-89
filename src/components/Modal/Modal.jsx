@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { StyledModal } from './Styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from 'redux/modal/modal.reducer';
+import { selectModalData } from 'redux/modal/modal.selectors';
 
 /*
 Методи життєвого циклу - це зарезервовані реактом методи(функції),
@@ -34,15 +35,14 @@ import { closeModal } from 'redux/modal/modal.reducer';
 */
 
 const Modal = () => {
-  // const { modalData, closeModal } = useContext(ModalContext);
-  const modalData = useSelector(state => state.modal.modalData);
+  const modalData = useSelector(selectModalData);
   const dispatch = useDispatch();
   const [counter, setCounter] = useState(1);
 
   useEffect(() => {
     const handleKeyDown = event => {
       if (event.code === 'Escape') {
-        dispatch(closeModal())
+        dispatch(closeModal());
       }
     };
 
@@ -57,15 +57,14 @@ const Modal = () => {
 
   const handleOverayClick = event => {
     if (event.target === event.currentTarget) {
-      dispatch(closeModal())
+      dispatch(closeModal());
     }
   };
-
 
   return (
     <StyledModal onClick={handleOverayClick}>
       <div className="modal">
-        <button onClick={closeModal} className="closeBtn">
+        <button onClick={() => dispatch(closeModal())} className="closeBtn">
           ❌
         </button>
         <h2>Product Details</h2>
