@@ -14,6 +14,7 @@ import storage from 'redux-persist/lib/storage';
 import { productsReducer } from './products/products.reducer';
 import { modalReducer } from './modal/modal.reducer';
 import { postDetailsReducer } from './postDetails/postDetails.reducer';
+import { authReducer } from './auth/auth.reducer';
 
 const productsConfig = {
   key: 'products',
@@ -21,11 +22,18 @@ const productsConfig = {
   whitelist: ['products'],
 };
 
+const authConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['token'],
+};
+
 export const store = configureStore({
   reducer: {
     productsStore: persistReducer(productsConfig, productsReducer),
     modal: modalReducer,
     magazine: postDetailsReducer,
+    auth: persistReducer(authConfig, authReducer),
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

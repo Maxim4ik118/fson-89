@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 // import HomePage from 'pages/HomePage';
 // import PostDetails from 'pages/PostDetails';
@@ -6,12 +6,16 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 // import ProductsPage from 'pages/ProductsPage';
 import Layout from './Layout/Layout';
 import Loader from './Loader/Loader';
+import { useDispatch } from 'react-redux';
+import { refreshThunk } from 'redux/auth/auth.reducer';
 
 const HomePage = lazy(() => import('pages/HomePage'));
 const PostDetails = lazy(() => import('pages/PostDetails'));
 const PostsPage = lazy(() => import('pages/PostsPage'));
 const ProductsPage = lazy(() => import('pages/ProductsPage'));
-
+const Login = lazy(() => import('pages/LoginPage'));
+const Register = lazy(() => import('pages/RegisterPage'));
+const Contacts = lazy(() => import('pages/ContactsPage'));
 /*
 1. Обгорнути весь App в компонент BrowserRouter
 2. Прописати маршрути та компоненти Link|NavLink
@@ -36,14 +40,22 @@ const ProductsPage = lazy(() => import('pages/ProductsPage'));
 */
 
 export const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(refreshThunk());
+  }, [dispatch]);
+
   return (
     <Layout>
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/contacts" element={<Contacts />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/posts" element={<PostsPage />} />
-          {/* /posts/21dwadw */}
           <Route path="/posts/:postId/*" element={<PostDetails />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

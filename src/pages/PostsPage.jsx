@@ -53,7 +53,7 @@ const PostsPage = () => {
           <span>Search post by id:</span>
           <input type="text" name="searchKey" required placeholder="12" />
         </label>
-        <button type="submit">Search post</button>
+        <button type="submit">{isLoading ? <Loader /> : 'Search post'} </button>
       </form>
       {error !== null && <p className="error-bage">{error}</p>}
       {isLoading && <Loader />}
