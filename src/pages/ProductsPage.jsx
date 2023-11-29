@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,10 +12,8 @@ import Filter from 'components/Filter/Filter';
 import {
   selectFilteredProducts,
   selectProducts,
-  selectProductsFilterTerm,
 } from 'redux/products/products.selectors';
 import { selectIsOpenModal } from 'redux/modal/modal.selectors';
-import { useMemo, useState } from 'react';
 
 const ProductsPage = () => {
   const dispatch = useDispatch();

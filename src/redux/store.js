@@ -15,6 +15,7 @@ import { productsReducer } from './products/products.reducer';
 import { modalReducer } from './modal/modal.reducer';
 import { postDetailsReducer } from './postDetails/postDetails.reducer';
 import { authReducer } from './auth/auth.reducer';
+import { contactsReducer } from './contacts/contacts.reducer';
 
 const productsConfig = {
   key: 'products',
@@ -34,6 +35,7 @@ export const store = configureStore({
     modal: modalReducer,
     magazine: postDetailsReducer,
     auth: persistReducer(authConfig, authReducer),
+    phonebook: contactsReducer, 
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
